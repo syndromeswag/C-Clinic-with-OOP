@@ -795,10 +795,6 @@ class Program
 
 
                 }
-                if (action == "7")
-                {
-
-                }
                 if (action == "0")
                 {
                     break;
