@@ -475,329 +475,328 @@ class Program
         {
             try
             {
-                Console.WriteLine("1. Добавить врача \n2. Добавить пациента \n3. Добавить лекарство \n4. Зарегистрировать приём \n5. Назначить лекарство \n6. Отчёты \n7. Поиск \n0. Выход");
+                Console.WriteLine("1. Добавить врача \n2. Добавить пациента \n3. Добавить лекарство \n4. Зарегистрировать приём \n5. Назначить лекарство \n6. Отчёты \n0. Выход");
                 string action = Console.ReadLine();
-
-                if (action == "1")
+                
+                switch (action)
                 {
-                    try
-                    {
-                        Console.WriteLine("Введите ID доктора");
-                        string id = Console.ReadLine();
-                        Console.WriteLine("Введите имя доктора");
-                        string name = Console.ReadLine();
-                        Console.WriteLine("Введите специальность доктора");
-                        string specialty = Console.ReadLine();
-                        clinic.AddDoctor(new Doctor(id, name, specialty));
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-                if (action == "2")
-                {
-                    try
-                    {
-                        Console.WriteLine("Введите ID пациента");
-                        string id = Console.ReadLine();
-                        Console.WriteLine("Введите имя пациента");
-                        string name = Console.ReadLine();
-                        Console.WriteLine("Введите возраст пациента");
-                        int age = Convert.ToInt32(Console.ReadLine());
-                        clinic.AddPatient(new Patient(id, name, age));
-                    }
-                    catch (OverflowException)
-                    {
-                        Console.WriteLine("Возраст слишком велик");
-                    }
-                    catch (FormatException)
-                    {
-                        Console.WriteLine("Возраст должен быть числом");
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-                if (action == "3")
-                {
-                    try
-                    {
-                        Console.WriteLine("Введите название лекарства");
-                        string name = Console.ReadLine();
-                        Console.WriteLine("Введите цену лекарства");
-                        int price = Convert.ToInt32(Console.ReadLine());
-                        Console.WriteLine("Введите остаток лекарства на складе");
-                        int stock = Convert.ToInt32(Console.ReadLine());
-                        clinic.AddMedicine(new Medicine(name, price, stock));
-                    }
-                    catch (OverflowException)
-                    {
-                        Console.WriteLine("Сумма слишком велика");
-                    }
-                    catch (ArgumentOutOfRangeException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                    catch (FormatException)
-                    {
-                        Console.WriteLine("Сумма должна быть числом");
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-                if (action == "4")
-                {
-                    try
-                    {
-                        Console.WriteLine("Введите ID доктора");
-                        string doctorid = Console.ReadLine();
-                        Console.WriteLine("Введите ID пациента");
-                        string patientid = Console.ReadLine();
-                        Console.WriteLine("Введите диагноз");
-                        string diagnosis = Console.ReadLine();
-                        Console.WriteLine($"Приём {clinic.RegisterVisit(doctorid, patientid, diagnosis)} создан");
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-                if (action == "5")
-                {
-                    try
-                    {
-                        Console.WriteLine("Введите номер визита");
-                        int visitnumber = Convert.ToInt32(Console.ReadLine());
-                        Console.WriteLine("Введите название лекарства");
-                        string medicineName = Console.ReadLine();
-                        Console.WriteLine("Введите количество лекарства");
-                        int quantity = Convert.ToInt32(Console.ReadLine());
-                        clinic.Prescribe(visitnumber, medicineName, quantity);
-                    }
-                    catch (ArgumentOutOfRangeException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                    catch (ArgumentException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                    catch (OverflowException)
-                    {
-                        Console.WriteLine("Сумма слишком велика");
-                    }
-                    catch (FormatException)
-                    {
-                        Console.WriteLine("Номер визита должен быть числом");
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                    }
-                }
-                if (action == "6")
-                {
-                    Console.WriteLine("Все врачи:");
-
-                    foreach (var pair in clinic.Doctors)
-                    {
-                        Console.WriteLine("-----");
-                        Console.WriteLine($"ID: {pair.Key}");
-                        Console.WriteLine($"ФИО: {pair.Value.Name}");
-                        Console.WriteLine($"Специальность: {pair.Value.Specialty}");
-                        Console.WriteLine("-----");
-                    }
-
-                    Console.WriteLine();
-                    Console.WriteLine("Все пациенты:");
-
-                    foreach (var pair in clinic.Patients)
-                    {
-                        Console.WriteLine("-----");
-                        Console.WriteLine($"ID: {pair.Key}");
-                        Console.WriteLine($"ФИО: {pair.Value.Name}");
-                        Console.WriteLine($"Возраст: {pair.Value.Age}");
-                        Console.WriteLine("-----");
-                    }
-
-                    Console.WriteLine();
-                    Console.WriteLine("Все лекарства:");
-
-                    foreach (var pair in clinic.Medicines)
-                    {
-                        Console.WriteLine($"{pair.Key}: Цена: {pair.Value.Price} Остаток: {pair.Value.Stock}");
-                    }
-
-                    Console.WriteLine();
-                    Console.WriteLine("Уникальные специальности");
-
-                    HashSet<string> UniqueSpeciality = new HashSet<string>();
-
-                    foreach (var pair in clinic.Doctors)
-                    {
-                        UniqueSpeciality.Add(pair.Value.Specialty);
-                    }
-
-                    foreach (var s in UniqueSpeciality)
-                    {
-                        Console.WriteLine(s);
-                    }
-
-                    Console.WriteLine();
-                    Console.WriteLine("Топ 3 диагноза по частоте");
-
-                    Dictionary<string, int> DiagnosisCount = new Dictionary<string, int>();
-
-                    foreach (Visit v in clinic.Visits)
-                    {
-                        if (DiagnosisCount.TryGetValue(v.Diagnosis, out int value))
+                    case "1":
+                        try
                         {
-                            DiagnosisCount[v.Diagnosis]++;
+                            Console.WriteLine("Введите ID доктора");
+                            string id = Console.ReadLine();
+                            Console.WriteLine("Введите имя доктора");
+                            string name = Console.ReadLine();
+                            Console.WriteLine("Введите специальность доктора");
+                            string specialty = Console.ReadLine();
+                            clinic.AddDoctor(new Doctor(id, name, specialty));
                         }
-                        else
+                        catch (InvalidOperationException ex)
                         {
-                            DiagnosisCount[v.Diagnosis] = 1;
+                            Console.WriteLine(ex.Message);
                         }
-                    }
-                    string winner = "";
-                    int winnercount = 0;
-                    for (int i = 0; i < 3; i++)
-                    {
-                        if (DiagnosisCount.Count == 0)
+                        break;
+
+                    case "2":
+                        try
                         {
-                            Console.WriteLine("Словарь для топ 3 пуст");
-                            break;
+                            Console.WriteLine("Введите ID пациента");
+                            string id = Console.ReadLine();
+                            Console.WriteLine("Введите имя пациента");
+                            string name = Console.ReadLine();
+                            Console.WriteLine("Введите возраст пациента");
+                            int age = Convert.ToInt32(Console.ReadLine());
+                            clinic.AddPatient(new Patient(id, name, age));
                         }
-                        foreach (var pair in DiagnosisCount)
+                        catch (OverflowException)
                         {
-                            if (winnercount < pair.Value)
+                            Console.WriteLine("Возраст слишком велик");
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("Возраст должен быть числом");
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        break;
+
+                    case "3":
+                        try
+                        {
+                            Console.WriteLine("Введите название лекарства");
+                            string name = Console.ReadLine();
+                            Console.WriteLine("Введите цену лекарства");
+                            int price = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Введите остаток лекарства на складе");
+                            int stock = Convert.ToInt32(Console.ReadLine());
+                            clinic.AddMedicine(new Medicine(name, price, stock));
+                        }
+                        catch (OverflowException)
+                        {
+                            Console.WriteLine("Сумма слишком велика");
+                        }
+                        catch (ArgumentOutOfRangeException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("Сумма должна быть числом");
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        break;
+                    case "4":
+                        try
+                        {
+                            Console.WriteLine("Введите ID доктора");
+                            string doctorid = Console.ReadLine();
+                            Console.WriteLine("Введите ID пациента");
+                            string patientid = Console.ReadLine();
+                            Console.WriteLine("Введите диагноз");
+                            string diagnosis = Console.ReadLine();
+                            Console.WriteLine($"Приём {clinic.RegisterVisit(doctorid, patientid, diagnosis)} создан");
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        break;
+                    case "5":
+                        try
+                        {
+                            Console.WriteLine("Введите номер визита");
+                            int visitnumber = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("Введите название лекарства");
+                            string medicineName = Console.ReadLine();
+                            Console.WriteLine("Введите количество лекарства");
+                            int quantity = Convert.ToInt32(Console.ReadLine());
+                            clinic.Prescribe(visitnumber, medicineName, quantity);
+                        }
+                        catch (ArgumentOutOfRangeException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        catch (ArgumentException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        catch (OverflowException)
+                        {
+                            Console.WriteLine("Сумма слишком велика");
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("Номер визита должен быть числом");
+                        }
+                        catch (InvalidOperationException ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                        }
+                        break;
+
+                    case "6":
+                        Console.WriteLine("Все врачи:");
+
+                        foreach (var pair in clinic.Doctors)
+                        {
+                            Console.WriteLine("-----");
+                            Console.WriteLine($"ID: {pair.Key}");
+                            Console.WriteLine($"ФИО: {pair.Value.Name}");
+                            Console.WriteLine($"Специальность: {pair.Value.Specialty}");
+                            Console.WriteLine("-----");
+                        }
+
+                        Console.WriteLine();
+                        Console.WriteLine("Все пациенты:");
+
+                        foreach (var pair in clinic.Patients)
+                        {
+                            Console.WriteLine("-----");
+                            Console.WriteLine($"ID: {pair.Key}");
+                            Console.WriteLine($"ФИО: {pair.Value.Name}");
+                            Console.WriteLine($"Возраст: {pair.Value.Age}");
+                            Console.WriteLine("-----");
+                        }
+
+                        Console.WriteLine();
+                        Console.WriteLine("Все лекарства:");
+
+                        foreach (var pair in clinic.Medicines)
+                        {
+                            Console.WriteLine($"{pair.Key}: Цена: {pair.Value.Price} Остаток: {pair.Value.Stock}");
+                        }
+
+                        Console.WriteLine();
+                        Console.WriteLine("Уникальные специальности");
+
+                        HashSet<string> UniqueSpeciality = new HashSet<string>();
+
+                        foreach (var pair in clinic.Doctors)
+                        {
+                            UniqueSpeciality.Add(pair.Value.Specialty);
+                        }
+
+                        foreach (var s in UniqueSpeciality)
+                        {
+                            Console.WriteLine(s);
+                        }
+
+                        Console.WriteLine();
+                        Console.WriteLine("Топ 3 диагноза по частоте");
+
+                        Dictionary<string, int> DiagnosisCount = new Dictionary<string, int>();
+
+                        foreach (Visit v in clinic.Visits)
+                        {
+                            if (DiagnosisCount.TryGetValue(v.Diagnosis, out int value))
                             {
-                                winner = pair.Key;
-                                winnercount = pair.Value;
-                            }
-                        }
-                        Console.WriteLine("Диагноз: " + winner + " Количество: " + winnercount);
-                        DiagnosisCount.Remove(winner);
-                        winner = "";
-                        winnercount = 0;
-                    }
-
-                    Console.WriteLine();
-                    Console.WriteLine("Самое назначаемое лекарство по количеству");
-
-                    Dictionary<string, int> MedicinesCount = new Dictionary<string, int>();
-
-                    foreach (var v in clinic.Visits)
-                    {
-                        foreach (Prescription prescription in v.Prescriptions)
-                        {
-                            if (MedicinesCount.TryGetValue(prescription.Medicine.Name, out int value))
-                            {
-                                MedicinesCount[prescription.Medicine.Name] += prescription.Quantity;
+                                DiagnosisCount[v.Diagnosis]++;
                             }
                             else
                             {
-                                MedicinesCount[prescription.Medicine.Name] = prescription.Quantity;
+                                DiagnosisCount[v.Diagnosis] = 1;
                             }
                         }
-                    }
-                    string winnermedicine = "";
-                    int winnermedicinecount = 0;
-                    foreach (var pair in MedicinesCount)
-                    {
-                        if (winnermedicinecount < pair.Value)
+                        string winner = "";
+                        int winnercount = 0;
+                        for (int i = 0; i < 3; i++)
                         {
-                            winnermedicine = pair.Key;
-                            winnermedicinecount = pair.Value;
+                            if (DiagnosisCount.Count == 0)
+                            {
+                                Console.WriteLine("Словарь для топ 3 пуст");
+                                break;
+                            }
+                            foreach (var pair in DiagnosisCount)
+                            {
+                                if (winnercount < pair.Value)
+                                {
+                                    winner = pair.Key;
+                                    winnercount = pair.Value;
+                                }
+                            }
+                            Console.WriteLine("Диагноз: " + winner + " Количество: " + winnercount);
+                            DiagnosisCount.Remove(winner);
+                            winner = "";
+                            winnercount = 0;
                         }
-                    }
-                    Console.WriteLine(winnermedicine);
-                    Console.WriteLine();
-                    Console.WriteLine("Лекарства на исходе:");
 
-                    Console.WriteLine("Введите порог");
-                    int porog = Convert.ToInt32(Console.ReadLine());
-                    Console.WriteLine();
-                    foreach (var pair in clinic.Medicines)
-                    {
-                        if (pair.Value.Stock < porog)
+                        Console.WriteLine();
+                        Console.WriteLine("Самое назначаемое лекарство по количеству");
+
+                        Dictionary<string, int> MedicinesCount = new Dictionary<string, int>();
+
+                        foreach (var v in clinic.Visits)
                         {
-                            Console.WriteLine(pair.Key);
+                            foreach (Prescription prescription in v.Prescriptions)
+                            {
+                                if (MedicinesCount.TryGetValue(prescription.Medicine.Name, out int value))
+                                {
+                                    MedicinesCount[prescription.Medicine.Name] += prescription.Quantity;
+                                }
+                                else
+                                {
+                                    MedicinesCount[prescription.Medicine.Name] = prescription.Quantity;
+                                }
+                            }
                         }
-                    }
-                    Console.WriteLine();
-                    Console.WriteLine("Лекарства, которые ни разу не назначались");
-
-                    HashSet<string> PrescribedNames = new HashSet<string>();
-
-                    foreach (var pair in MedicinesCount)
-                    {
-                        PrescribedNames.Add(pair.Key);
-                    }
-
-                    foreach (var pair in clinic.Medicines)
-                    {
-                        if (!PrescribedNames.Contains(pair.Value.Name))
+                        string winnermedicine = "";
+                        int winnermedicinecount = 0;
+                        foreach (var pair in MedicinesCount)
                         {
-                            Console.WriteLine(pair.Value.Name);
+                            if (winnermedicinecount < pair.Value)
+                            {
+                                winnermedicine = pair.Key;
+                                winnermedicinecount = pair.Value;
+                            }
                         }
-                    }
-                    Console.WriteLine();
-                    Console.WriteLine("Пациенты с 2+ приёмами");
+                        Console.WriteLine(winnermedicine);
+                        Console.WriteLine();
+                        Console.WriteLine("Лекарства на исходе:");
 
-                    Dictionary<string, int> PatientsCount = new Dictionary<string, int>();
-
-                    foreach (Visit v in clinic.Visits)
-                    {
-                        if (PatientsCount.TryGetValue(v.PatientId, out int value))
+                        Console.WriteLine("Введите порог");
+                        int porog = Convert.ToInt32(Console.ReadLine());
+                        Console.WriteLine();
+                        foreach (var pair in clinic.Medicines)
                         {
-                            PatientsCount[v.PatientId]++;
+                            if (pair.Value.Stock < porog)
+                            {
+                                Console.WriteLine(pair.Key);
+                            }
                         }
-                        else
+                        Console.WriteLine();
+                        Console.WriteLine("Лекарства, которые ни разу не назначались");
+
+                        HashSet<string> PrescribedNames = new HashSet<string>();
+
+                        foreach (var pair in MedicinesCount)
                         {
-                            PatientsCount[v.PatientId] = 1;
+                            PrescribedNames.Add(pair.Key);
                         }
-                    }
 
-                    foreach (var pair in PatientsCount)
-                    {
-                        if (pair.Value > 1)
+                        foreach (var pair in clinic.Medicines)
                         {
-                            Patient foundedpatient = clinic.FindPatient(pair.Key);
-                            Console.WriteLine(foundedpatient.Name);
+                            if (!PrescribedNames.Contains(pair.Value.Name))
+                            {
+                                Console.WriteLine(pair.Value.Name);
+                            }
                         }
-                    }
-                    Console.WriteLine();
-                    Console.WriteLine("Общая стоимость всех назначений");
+                        Console.WriteLine();
+                        Console.WriteLine("Пациенты с 2+ приёмами");
 
-                    int totalcost = 0;
-                    if (clinic.Visits.Count == 0)
-                    {
-                        throw new DivideByZeroException("Список визитов пуст");
+                        Dictionary<string, int> PatientsCount = new Dictionary<string, int>();
 
-                    }
+                        foreach (Visit v in clinic.Visits)
+                        {
+                            if (PatientsCount.TryGetValue(v.PatientId, out int value))
+                            {
+                                PatientsCount[v.PatientId]++;
+                            }
+                            else
+                            {
+                                PatientsCount[v.PatientId] = 1;
+                            }
+                        }
 
-                    foreach (Visit v in clinic.Visits)
-                    {
-                        totalcost += v.TotalCost();
-                    }
-                    Console.WriteLine(totalcost);
+                        foreach (var pair in PatientsCount)
+                        {
+                            if (pair.Value > 1)
+                            {
+                                Patient foundedpatient = clinic.FindPatient(pair.Key);
+                                Console.WriteLine(foundedpatient.Name);
+                            }
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("Общая стоимость всех назначений");
 
+                        int totalcost = 0;
+                        if (clinic.Visits.Count == 0)
+                        {
+                            throw new DivideByZeroException("Список визитов пуст");
 
+                        }
 
+                        foreach (Visit v in clinic.Visits)
+                        {
+                            totalcost += v.TotalCost();
+                        }
+                        Console.WriteLine(totalcost);
+                        break;
 
-                }
-                if (action == "0")
-                {
-                    break;
+                    case "0":
+                        break;
+
+                    default:
+                        Console.WriteLine("Введено неправильное действие");
+                        break;
                 }
             }
             catch (FormatException)
